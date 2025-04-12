@@ -3,16 +3,70 @@ require('dotenv').config();
 const app = express();
 const mongoose = require('mongoose');
 const cors = require('cors');
+const passport = require('passport');
+const LocalStrategy = require('passport-local').Strategy;
+const session = require('express-session');
+const MongoStore = require('connect-mongo');
+
+//Models
+const User = require('./model/UserModel');
+
+//Routers
+const userRouter = require('./routes/user.router');
 
 //Models
 const HoldingsModel = require('./model/HoldingsModel');
 const PositionsModel = require('./model/PositionsModel');
 const OrdersModel = require('./model/OrdersModel');
 
-app.use(cors());
+//Allowed origins for CORS
+const allowedOrigins = [
+    'http://localhost:5174',
+    'http://localhost:5173',
+];
+app.use(cors({
+    origin:"http://localhost:5174",
+    credentials: true,
+}));
 app.use(express.json());
 
+//MONGODB URL
+const uri = process.env.MONGO_URL;
+//Session storage congiguration
+const store = MongoStore.create({
+    mongoUrl: uri,
+    crypto: {
+        secret: process.env.SESSION_SECRET,
+    },
+    touchAfter: 24 * 3600
+});
+
+const sessionConfig = {
+    store: store,
+    secret: process.env.COOKIE_SECRET,
+    resave: false,
+    saveUninitialized: true,
+    cookie: {
+        maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+        httpOnly: true,
+        secure: false, // Secure only in production
+        sameSite: 'lax', // SameSite attribute for CSRF protection
+    },
+}
+
+app.use(session(sessionConfig));
+app.use(passport.initialize());
+
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 //Routes
+
+app.use('/api/user', userRouter);
+
 // app.get('/addPositions', (req, res) => {
 //     const tempPositions = [
 //         {
@@ -180,36 +234,35 @@ app.use(express.json());
 //     res.send("Holdings added successfully!");
 // });
 
-app.get('/holdings', async (req, res) => {
-    try {
-        const holdings = await HoldingsModel.find();
-        res.json(holdings);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-});
+// app.get('/holdings', async (req, res) => {
+//     try {
+//         const holdings = await HoldingsModel.find();
+//         res.json(holdings);
+//     } catch (error) {
+//         res.status(500).json({ message: error.message });
+//     }
+// });
 
-app.get('/positions', async (req, res) => {
-    try {
-        const positions = await PositionsModel.find();
-        res.json(positions);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-});
+// app.get('/positions', async (req, res) => {
+//     try {
+//         const positions = await PositionsModel.find();
+//         res.json(positions);
+//     } catch (error) {
+//         res.status(500).json({ message: error.message });
+//     }
+// });
 
-app.post("/newOrder", (req, res) => {
-    // const { name, qty, avg, price, net, day } = req.body;
+// app.post("/newOrder", (req, res) => {
+//     // const { name, qty, avg, price, net, day } = req.body;
 
-    const newOrder = new OrdersModel({...req.body});
-    console.log(newOrder);
-    newOrder.save()
-        .then(() => res.status(201).json({ message: "Order created successfully!" }))
-        .catch((error) => res.status(400).json({ message: error.message }));
-});
+//     const newOrder = new OrdersModel({...req.body});
+//     console.log(newOrder);
+//     newOrder.save()
+//         .then(() => res.status(201).json({ message: "Order created successfully!" }))
+//         .catch((error) => res.status(400).json({ message: error.message }));
+// });
 
 const PORT = process.env.PORT || 3000;
-const uri = process.env.MONGO_URL;
 
 app.listen(PORT, () => {
     console.log('Server is running on port 3000');
