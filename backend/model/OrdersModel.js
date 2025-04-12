@@ -8,5 +8,5 @@ const OrdersSchema = new Schema({
     mode: { type: String },
 });
 
-const OrdersModel = mongoose.model('Orders', OrdersSchema);
+const OrdersModel = mongoose.model('Order', OrdersSchema);
 module.exports = OrdersModel;
