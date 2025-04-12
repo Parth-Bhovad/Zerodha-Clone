@@ -1,13 +1,27 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import axios from "axios";
+
 
 const Funds = () => {
+
+  const [funds, setFunds] = useState(0);
+  useEffect(() => {
+    const fetchFunds = async () => {
+      let response = await axios.get("http://localhost:3000/api/user/fund", {withCredentials: true});
+      setFunds(response.data.margin);
+    }
+
+    fetchFunds();
+  }, []);
+
   return (
     <>
       <div className="funds">
         <p>Instant, zero-cost fund transfers with UPI </p>
-        <Link className="btn btn-green">Add funds</Link>
-        <Link className="btn btn-blue">Withdraw</Link>
+        <Link className="btn btn-green" to={"/add-funds"}>Add funds</Link>
+        <Link className="btn btn-blue" to={"/withdraw-funds"}>Withdraw</Link>
       </div>
 
       <div className="row">
@@ -19,7 +33,7 @@ const Funds = () => {
           <div className="table">
             <div className="data">
               <p>Available margin</p>
-              <p className="imp colored">4,043.10</p>
+              <p className="imp colored">{funds}</p>
             </div>
             <div className="data">
               <p>Used margin</p>
