@@ -4,6 +4,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import './index.css'
 import HomePage from "./landing_page/home/HomePage.jsx";
 import Signup from "./landing_page/signup/Signup.jsx";
+import Login from "./landing_page/login/Login.jsx";
 import AboutPage from "./landing_page/about/AboutPage.jsx";
 import ProductPage from "./landing_page/products/ProductsPage.jsx";
 import PricingPage from "./landing_page/pricing/PricingPage.jsx";
@@ -24,6 +25,7 @@ createRoot(document.getElementById("root")).render(
         <Route path="/product" element={<ProductPage />} />
         <Route path="/pricing" element={<PricingPage />} />
         <Route path="/support" element={<SupportPage />} />
+        <Route path="/login" element={<Login />} />
         <Route path="/*" element={<NotFound />} />
         {/* Add more routes as needed */}
       </Routes>
