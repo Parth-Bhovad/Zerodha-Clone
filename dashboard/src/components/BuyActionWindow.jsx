@@ -12,12 +12,13 @@ const BuyActionWindow = ({ uid }) => {
   const [stockPrice, setStockPrice] = useState(0.0);
 
   const handleBuyClick = async () => {
-    let res = await axios.post("http://localhost:3000/newOrder", {
+    let res = await axios.post("http://localhost:3000/api/user/order", {
       name: uid,
       qty: stockQuantity,
       price: stockPrice,
       mode: "BUY",
-    });
+    },
+    { withCredentials: true });
     console.log(res.data);
     GeneralContext.closeBuyWindow();
   };
