@@ -3,14 +3,9 @@ import { Link } from "react-router-dom";
 
 const Menu = () => {
   const [selectedMenu, setSelectedMenu] = useState(0);
-  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
 
   const handleMenuClick = (index) => {
     setSelectedMenu(index);
-  }
-
-  const handleProfileClick = () => {
-    setIsProfileDropdownOpen(!isProfileDropdownOpen);
   }
 
   const menuClass = "menu";
@@ -53,10 +48,12 @@ const Menu = () => {
           </li>
         </ul>
         <hr />
-        <div className="profile" onClick={handleProfileClick}>
-          <div className="avatar">ZU</div>
-          <p className="username">USERID</p>
-        </div>
+        <Link to={"/profile"} style={{ textDecoration: "none" }}>
+          <div className="profile">
+            <div className="avatar">ZU</div>
+            <p className="username">USERID</p>
+          </div>
+        </Link>
       </div>
     </div>
   );
