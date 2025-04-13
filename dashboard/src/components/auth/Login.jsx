@@ -19,11 +19,16 @@ const Login = () => {
   };
 
   const handleSubmit = async () => {
-    console.log('Login details:', formData);
-    const response = await axios.post('http://localhost:3000/api/user/login', formData, {withCredentials: true});
-    console.log('Response:', response);
-    alert(`Logged in as: ${formData.username}`);
-    navigate('/');
+    try {
+        console.log('Login details:', formData);
+        const response = await axios.post('http://localhost:3000/api/user/login', formData, {withCredentials: true});
+        console.log('Response:', response.data.user.username);
+        localStorage.setItem('username', response.data.user.username);
+        navigate('/profile');
+    } catch (error) {
+        console.error('Login error:', error);
+        alert('Invalid username or password. Please try again.');
+    }
   };
 
 return (
