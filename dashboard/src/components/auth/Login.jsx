@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
+    const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     username: '',
     password: '',
@@ -14,11 +18,12 @@ const Login = () => {
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     console.log('Login details:', formData);
-    // Add your backend auth logic here
+    const response = await axios.post('http://localhost:3000/api/user/login', formData, {withCredentials: true});
+    console.log('Response:', response);
     alert(`Logged in as: ${formData.username}`);
+    navigate('/');
   };
 
 return (
@@ -34,7 +39,6 @@ return (
                 <small className="text-muted">Enter your credentials to continue</small>
             </div>
 
-            <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                     <input
                         type="text"
@@ -59,10 +63,9 @@ return (
                     />
                 </div>
 
-                <button type="submit" className="btn btn-primary w-100">
+                <button type="submit" className="btn btn-primary w-100" onClick={handleSubmit}>
                     Log In
                 </button>
-            </form>
 
             <div className="text-center mt-3">
                 <small className="text-muted">
