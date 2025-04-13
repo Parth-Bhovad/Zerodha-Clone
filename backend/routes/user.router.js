@@ -6,13 +6,14 @@ const userController = require('../controllers/userController');
 
 const router = express.Router();
 
-router.get('/get-orders', userController.getOrders); // Get orders route
-router.get('/get-holdings', userController.getHoldings); // Get holdings route
+// =====================
+// USER AUTHENTICATION
+// =====================
 
-router.post('/', userController.signUp); // Sign up route
-router.get('/', userController.getUserInfo); // Login route
-router.patch('/', userController.changePassword); // Update password route
+// Register a new user
+router.post('/', userController.signUp); 
 
+// Login route using Passport.js local strategy
 router.post('/login', (req, res, next) => {
     passport.authenticate('local', (err, user, info) => {
         if (err) return next(err);
@@ -28,17 +29,42 @@ router.post('/login', (req, res, next) => {
     })(req, res, next);
 });
 
-router.post('/logout', userController.logout); // Logout route
+// Logout the currently logged-in user
+router.post('/logout', userController.logout);
 
-router.post('/order', userController.order); // Order route
+// Get logged-in user's information (used after login to verify session)
+router.get('/', userController.getUserInfo);
 
-router.patch('/fund/add', userController.addFunds); // Add funds route
-router.patch('/fund/withdraw', userController.withdrawFunds); // Withdraw funds route
-router.get('/fund', userController.getFunds); // Get funds route
+// Change the current user's password
+router.patch('/', userController.changePassword);
 
 
-router.delete('/:id', (req, res) => {
-    res.send(`Delete user with ID: ${req.params.id}`);
-});
+// =====================
+// ORDERS & HOLDINGS
+// =====================
+
+// Place a new order (buy/sell)
+router.post('/order', userController.order);
+
+// Get all orders made by the user
+router.get('/get-orders', userController.getOrders);
+
+// Get user's current holdings (stocks/assets owned)
+router.get('/get-holdings', userController.getHoldings);
+
+
+// =====================
+// FUNDS MANAGEMENT
+// =====================
+
+// Add funds to user's trading account
+router.patch('/fund/add', userController.addFunds);
+
+// Withdraw funds from user's trading account
+router.patch('/fund/withdraw', userController.withdrawFunds);
+
+// Get current fund balance of the user
+router.get('/fund', userController.getFunds);
+
 
 module.exports = router;
