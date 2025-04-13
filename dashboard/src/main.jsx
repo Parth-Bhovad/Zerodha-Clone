@@ -7,10 +7,11 @@ import Login from "./components/auth/Login";
 import Signup from "./components/auth/Signup";
 import AddFunds from "./components/AddFunds";
 import WithdrawFunds from "./components/WithdrawFunds";
+import Profile from "./components/Profile";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <BrowserRouter>
       <Routes>
         <Route path="/*" element={<Home />} />
@@ -18,7 +19,8 @@ root.render(
         <Route path="/signup" element={<Signup />} />
         <Route path="/add-funds" element={<AddFunds />} />
         <Route path="/withdraw-funds" element={<WithdrawFunds />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
     </BrowserRouter>
-  </React.StrictMode>
+  // {/* </React.StrictMode> */}
 );
