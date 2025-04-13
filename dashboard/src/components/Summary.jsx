@@ -1,11 +1,11 @@
-
-import React from "react";
+import { useAuth } from "../AuthContext";
 
 const Summary = () => {
+  const {user} = useAuth();
   return (
     <>
       <div className="username">
-        <h6>Hi, User!</h6>
+        <h6>Hi, {user}!</h6>
         <hr className="divider" />
       </div>
 
