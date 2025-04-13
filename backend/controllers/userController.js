@@ -4,12 +4,12 @@ const OrdersModel = require("../model/OrdersModel");
 const signUp = async (req, res) => {
     const { email, username, password } = req.body;
     console.log(username);
-    
+
     try {
-        const newUser = await User({email, username});  // Create a new user instance
+        const newUser = await User({ email, username });  // Create a new user instance
         const registeredUser = await User.register(newUser, password);
         console.log(registeredUser); // Log the registered user for debugging
-        
+
         req.logIn(registeredUser, (err) => {
             if (err) {
                 return res.status(500).json({ message: "Login failed" });
@@ -22,13 +22,51 @@ const signUp = async (req, res) => {
     }
 }
 
-const holdings = async (req, res) => {
+const getUserInfo = async (req, res) => {
+    try {
+        const existingUser = await User.findById(req.user._id);
+        if (!existingUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        res.status(200).json({ username: existingUser.username, email: existingUser.email });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+const changePassword = async (req, res) => {
+    console.log("Change password request received");
+    try {
+        console.log("Fetching user with ID:", req.user._id);
+        const existingUser = await User.findById(req.user._id);
+        if (!existingUser) {
+            console.log("User not found");
+            return res.status(404).json({ message: "User not found" });
+        }
+
+        console.log("Setting new password for user:", req.user._id);
+        existingUser.setPassword(req.body.password, async (err) => {
+            if (err) {
+                console.error("Error setting password:", err);
+                return res.status(500).json({ message: "Error changing password" });
+            }
+            await existingUser.save(); // Save the updated user document
+            console.log("Password changed successfully for user:", req.user._id);
+            res.status(200).json({ message: "Password changed successfully!" });
+        });
+    } catch (error) {
+        console.error("Error in changePassword:", error.message);
+        res.status(500).json({ message: error.message });
+    }
+}
+
+const getHoldings = async (req, res) => {
     try {
         const exitingUser = await User.findById(req.user._id);
         if (!exitingUser) {
             return res.status(404).json({ message: "User not found" });
         }
- 
+
         const holdings = exitingUser.holdings;
         if (!holdings) {
             return res.status(404).json({ message: "No holdings found" });
@@ -40,16 +78,16 @@ const holdings = async (req, res) => {
 };
 
 const order = async (req, res) => {
-    const newOrder = new OrdersModel({...req.body});
+    const newOrder = new OrdersModel({ ...req.body });
     console.log(newOrder);
     newOrder.save()
-    .then(() => console.log("Order created successfully!"))
-    .catch((error) => res.status(400).json({ message: error.message }));
+        .then(() => console.log("Order created successfully!"))
+        .catch((error) => res.status(400).json({ message: error.message }));
     const existingUser = await User.findById(req.user._id);
     if (!existingUser) {
         return res.status(404).json({ message: "User not found" });
     }
-    
+
     existingUser.orders.push(newOrder._id);
     await existingUser.save();
     res.status(200).json({ message: "Order saved successfully!" });
@@ -57,14 +95,14 @@ const order = async (req, res) => {
 
 const getFunds = async (req, res) => {
     console.log("Getting funds...");
-    
+
     try {
         const existingUser = await User.findById(req.user._id);
         if (!existingUser) {
             return res.status(404).json({ message: "User not found" });
         }
         console.log(existingUser.balance);
-        
+
         res.json({ margin: existingUser.balance });
     } catch (error) {
         log.error("Error fetching funds:", error);
@@ -83,11 +121,11 @@ const addFunds = async (req, res) => {
         if (!existingUser) {
             return res.status(404).json({ message: "User not found" });
         }
-        
+
         existingUser.balance += amount; // Add the funds to the user's account
         await existingUser.save(); // Save the updated user document
-        
-        res.status(200).json({ message: "Funds added successfully!" , addedAmount: amount });
+
+        res.status(200).json({ message: "Funds added successfully!", addedAmount: amount });
     } catch (error) {
         console.log("Error adding funds:", error);
         res.status(500).json({ message: error });
@@ -125,19 +163,19 @@ const withdrawFunds = async (req, res) => {
 
 const getOrders = async (req, res) => {
     console.log("Getting orders...");
-    
+
     try {
         console.log("Fetching orders for user ID:", req.user._id);
-        
+
         console.log("existingUser");
         const existingUser = await User.findById(req.user._id).populate('orders');
         console.log(existingUser);
         if (!existingUser) {
             return res.status(404).json({ message: "User not found" });
         }
-        
-        
-        
+
+
+
         const orders = existingUser.orders;
         if (!orders) {
             return res.status(404).json({ message: "No orders found" });
@@ -148,13 +186,33 @@ const getOrders = async (req, res) => {
     }
 }
 
+const logout = (req, res) => {
+    req.logout((err) => {
+        if (err) {
+            console.error("Error during logout:", err);
+            return res.status(500).json({ message: "Logout failed" });
+        }
+        req.session.destroy((err) => {
+            if (err) {
+                console.error("Error destroying session:", err);
+                return res.status(500).json({ message: "Logout failed" });
+            }
+            res.clearCookie("connect.sid", { path: "/" }); // Clear the session cookie
+            res.status(200).json({ message: "Logged out successfully" });
+        });
+    })
+}
+
 module.exports = {
     signUp,
-    holdings,
+    getUserInfo,
+    changePassword,
+    getHoldings,
     order,
     getOrders,
     getFunds,
     addFunds,
     withdrawFunds,
+    logout,
     // Other controller functions can be added here
 };
