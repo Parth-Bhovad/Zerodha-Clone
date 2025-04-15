@@ -1,7 +1,6 @@
-import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
+//importing axios api
+import api from "../api/axios";
 
 
 const WithdrawFunds = () => {
@@ -9,7 +8,7 @@ const WithdrawFunds = () => {
   const [message, setMessage] = useState("");
 
   const handleWithdrawFunds = async () => {
-    const response = await axios.patch("http://localhost:3000/api/user/fund/withdraw", { amount }, { withCredentials: true });
+    const response = await api.patch("/api/user/fund/withdraw", { amount });
     console.log(response.data);
     setMessage(`₹${amount} withdrawn successfully.`);
   };

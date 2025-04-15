@@ -1,6 +1,7 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import axios from "axios";
+import { useState } from "react";
+
+//import axios api
+import api from "../api/axios";
 
 
 const AddFunds = () => {
@@ -11,7 +12,7 @@ const AddFunds = () => {
         try {
             console.log("Adding funds:", typeof amount);
 
-            const response = await axios.patch("http://localhost:3000/api/user/fund/add", { amount }, { withCredentials: true });
+            const response = await api.patch("/api/user/fund/add", { amount });
             console.log(response.data);
             setMessage(`₹${amount} added successfully.`);
         } catch (error) {

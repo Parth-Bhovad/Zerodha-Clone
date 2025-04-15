@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+//importing axios api
+import api from "../api/axios";
 
 // import { holdings } from "../data/data";
 import  VerticalGraph  from "./VerticalGraph";
@@ -10,7 +11,7 @@ const Holdings = () => {
 
 useEffect(() => {
   const fetchHoldings = async () => {
-    const response = await axios.get("http://localhost:3000/holdings");
+    const response = await api.get("/holdings");
     console.log(response.data);
     setAllHoldings(response.data);
   };

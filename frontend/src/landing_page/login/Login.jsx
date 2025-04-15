@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const Login = () => {
@@ -14,11 +14,17 @@ const Login = () => {
     });
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log('Login details:', formData);
-    // Add your backend auth logic here
-    alert(`Logged in as: ${formData.username}`);
+  const handleSubmit = async ( ) => {
+    try {
+        console.log('Login details:', formData);
+        const response = await api.post('/api/user/login', formData);
+        console.log('Response:', response.data.user.username);
+        localStorage.setItem('username', response.data.user.username);
+        window.location.href = import.meta.env.VITE_DASHBOARD_URL; // Redirect to dashboard after successful login    
+    } catch (error) {
+        console.error('Login error:', error);
+        alert('Invalid username or password. Please try again.');
+    }
   };
 
 return (
@@ -34,7 +40,6 @@ return (
                 <small className="text-muted">Enter your credentials to continue</small>
             </div>
 
-            <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                     <input
                         type="text"
@@ -59,10 +64,9 @@ return (
                     />
                 </div>
 
-                <button type="submit" className="btn btn-primary w-100">
+                <button type="submit" className="btn btn-primary w-100" onClick={handleSubmit}>
                     Log In
                 </button>
-            </form>
 
             <div className="text-center mt-3">
                 <small className="text-muted">

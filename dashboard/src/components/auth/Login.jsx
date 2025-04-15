@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+
+//importing axios api
+import api from '../../api/axios';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -21,10 +23,10 @@ const Login = () => {
   const handleSubmit = async () => {
     try {
         console.log('Login details:', formData);
-        const response = await axios.post('http://localhost:3000/api/user/login', formData, {withCredentials: true});
+        const response = await api.post('/api/user/login', formData);
         console.log('Response:', response.data.user.username);
         localStorage.setItem('username', response.data.user.username);
-        navigate('/profile');
+        navigate('/');
     } catch (error) {
         console.error('Login error:', error);
         alert('Invalid username or password. Please try again.');

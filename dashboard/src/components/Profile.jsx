@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+
+//importing axios api
+import api from "../api/axios";
 
 const UserProfile = () => {
   const [newPassword, setNewPassword] = useState('');
@@ -12,7 +14,7 @@ const UserProfile = () => {
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
-        const response = await axios.get('http://localhost:3000/api/user', { withCredentials: true });
+        const response = await api.get('/api/user');
         console.log(response.data);
         setUserInfo(response.data);
       } catch (error) {
@@ -44,6 +46,8 @@ const UserProfile = () => {
       const response = await axios.post('http://localhost:3000/api/user/logout', {}, { withCredentials: true });
       console.log('Logging out...');
       console.log('Response:', response);
+
+      localStorage.removeItem('username'); // Clear username from local storage after logout
       if (response.status === 200) {
         alert(response.data.message);
         Navigate("/login") // Redirect to login page

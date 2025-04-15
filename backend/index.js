@@ -20,12 +20,23 @@ const PositionsModel = require('./model/PositionsModel');
 const OrdersModel = require('./model/OrdersModel');
 
 //Allowed origins for CORS
-const allowedOrigins = [
-    'http://localhost:5174',
-    'http://localhost:5173',
-];
+const allowedOrigins = process.env.NODE_ENV === "production" ?
+    ["https://zerodha-dashboard-pqjg.onrender.com",
+        "https://zerodha-clone-tfsx.onrender.com"
+    ]
+    :
+    [
+        'http://localhost:5174',
+        'http://localhost:5173',
+    ];
 app.use(cors({
-    origin:"http://localhost:5174",
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     credentials: true,
 }));
 app.use(express.json());
@@ -49,8 +60,8 @@ const sessionConfig = {
     cookie: {
         maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
         httpOnly: true,
-        secure: false, // Secure only in production
-        sameSite: 'lax', // SameSite attribute for CSRF protection
+        secure: process.env.NODE_ENV === "production", // Secure only in production
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // SameSite attribute for CSRF protection
     },
 }
 

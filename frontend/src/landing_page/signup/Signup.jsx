@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+//importing axios api
+import api from '../../api/axios';
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -18,14 +19,18 @@ const Signup = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log('Form Data:', formData);
-    const response = await axios.post('http://localhost:3000/api/user', formData, {withCredentials: true});
-    console.log(response.data);
-    alert(`Welcome, ${formData.username}!`);
-    // Redirect to login page after successful signup
-    let navigate = useNavigate();
-    navigate('http://localhost:5174/');
+    try {
+        console.log('Form Data:', formData);
+        const response = await api.post('/api/user', formData);
+        console.log('Response:', response.data.user.username);
+        localStorage.setItem('username', response.data.user.username);
+        alert(`Welcome, ${formData.username}!`);
+        // Redirect to login page after successful signup
+        window.location.href = import.meta.env.VITE_DASHBOARD_URL; // Redirect to dashboard after successful Signup    
+    } catch (error) {
+        console.error('Signup error:', error);
+        alert('Error signing up. Please try again.');
+    }
   };
 
 return (

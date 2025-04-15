@@ -1,7 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useState, useEffect } from "react";
-import axios from "axios";
+
+//importing axios api
+import api from "../api/axios";
 
 
 const Funds = () => {
@@ -9,7 +11,7 @@ const Funds = () => {
   const [funds, setFunds] = useState(0);
   useEffect(() => {
     const fetchFunds = async () => {
-      let response = await axios.get("http://localhost:3000/api/user/fund", {withCredentials: true});
+      let response = await api.get("/api/user/fund");
       setFunds(response.data.margin);
     }
 
