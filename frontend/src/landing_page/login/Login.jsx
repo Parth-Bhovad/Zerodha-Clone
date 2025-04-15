@@ -1,6 +1,9 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
+//importing axios api
+import api from '../../api/axios';
+
 const Login = () => {
   const [formData, setFormData] = useState({
     username: '',
