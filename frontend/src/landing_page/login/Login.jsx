@@ -23,7 +23,7 @@ const Login = () => {
         const response = await api.post('/api/user/login', formData);
         console.log('Response:', response.data.user.username);
         localStorage.setItem('username', response.data.user.username);
-        window.location.href = import.meta.env.VITE_DASHBOARD_URL; // Redirect to dashboard after successful login    
+        // window.location.href = import.meta.env.VITE_DASHBOARD_URL; // Redirect to dashboard after successful login    
     } catch (error) {
         console.error('Login error:', error);
         alert('Invalid username or password. Please try again.');
