@@ -55,7 +55,7 @@ const sessionConfig = {
         maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
         httpOnly: true,
         secure: true, // Secure only in production
-        sameSite: none, // SameSite attribute for CSRF protection
+        sameSite: "none", // SameSite attribute for CSRF protection
     },
 }
 
