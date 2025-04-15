@@ -30,9 +30,14 @@ function Navbar() {
           id="navbarSupportedContent"
         >
           <ul className="navbar-nav mb-2 mb-lg-0 d-flex gap-4">
-            <li className="nav-item">
-              <Link className="nav-link" to="/signup">
+            <li className="nav-item" onClick={() => window.location.href = `${import.meta.env.VITE_DASHBOARD_URL}/signup`}>
+              <Link className="nav-link" >
                 Signup
+              </Link>
+            </li>
+            <li className="nav-item" onClick={() => window.location.href = `${import.meta.env.VITE_DASHBOARD_URL}/login`}>
+              <Link className="nav-link" >
+                Login
               </Link>
             </li>
             <li className="nav-item">
