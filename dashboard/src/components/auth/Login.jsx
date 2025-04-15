@@ -3,7 +3,8 @@ import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
 //importing axios api
-import api from '../../api/axios';
+// import api from '../../api/axios';
+import axios from 'axios';
 
 const Login = () => {
     const navigate = useNavigate();
@@ -23,7 +24,7 @@ const Login = () => {
   const handleSubmit = async () => {
     try {
         console.log('Login details:', formData);
-        const response = await api.post('/api/user/login', formData);
+        const response = await axios.post('https://zerodha-server-etwp.onrender.com/api/user/login', formData, {withCredentials: true});
         console.log('Response:', response.data.user.username);
         localStorage.setItem('username', response.data.user.username);
         navigate('/');

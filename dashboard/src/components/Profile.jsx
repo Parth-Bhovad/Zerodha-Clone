@@ -31,7 +31,7 @@ const UserProfile = () => {
       return;
     }
 
-    const response = await axios.patch('http://localhost:3000/api/user', { password: newPassword }, { withCredentials: true });
+    const response = await api.patch('/api/user', { password: newPassword });
     console.log('Updating password...');
     console.log('Response:', response);
     
@@ -43,7 +43,7 @@ const UserProfile = () => {
 
   const handleLogout = async () => {
     try {
-      const response = await axios.post('http://localhost:3000/api/user/logout', {}, { withCredentials: true });
+      const response = await api.post('/api/user/logout');
       console.log('Logging out...');
       console.log('Response:', response);
 
