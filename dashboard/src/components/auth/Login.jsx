@@ -25,7 +25,7 @@ const Login = () => {
     try {
         console.log('Login details:', formData);
         const response = await axios.post('https://zerodha-server-etwp.onrender.com/api/user/login', formData, {withCredentials: true});
-        console.log('Response:', response.data.user.username);
+        console.log('Response:', response);
         localStorage.setItem('userid', response.data.user.userId);
         navigate('/');
     } catch (error) {
