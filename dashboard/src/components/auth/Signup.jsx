@@ -23,8 +23,8 @@ const Signup = () => {
     try {
         console.log('Form Data:', formData);
         const response = await api.post('/api/user', formData);
-        console.log('Response:', response.data.user.username);
-        localStorage.setItem('username', response.data.user.username);
+        console.log('Response:', response.data);
+        localStorage.setItem('userId', response.data.userId);
         alert(`Welcome, ${formData.username}!`);
         // Redirect to login page after successful signup
         let navigate = useNavigate();

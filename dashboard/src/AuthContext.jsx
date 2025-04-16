@@ -11,11 +11,11 @@ export function AuthProvider({children}) {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const userid = localStorage.getItem('userid');
-        console.log("AuthContext userid:", userid);
+        const userId = localStorage.getItem('userId');
+        console.log("AuthContext userid:", userId);
 
-        if (userid) {
-            setUser(userid);
+        if (userId) {
+            setUser(userId);
         }
 
         setLoading(false); // Done checking localStorage

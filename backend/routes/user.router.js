@@ -17,29 +17,16 @@ const router = express.Router();
 router.post('/', userController.signUp);
 
 // Login route using Passport.js local strategy
-router.post('/login', (req, res, next) => {
-    passport.authenticate('local', (err, user, info) => {
-        if (err) return next(err);
-        if (!user) return res.status(401).json({ error: info?.message || 'Invalid credentials' });
-
-        req.logIn(user, (err) => {
-            if (err) return next(err);
-            return res.status(200).json({
-                message: 'Logged in successfully',
-                user: { username: user.username, email: user.email }
-            });
-        });
-    })(req, res, next);
-});
+router.post('/login', userController.login);
 
 // Logout the currently logged-in user
-router.post('/logout', isLoggedIn, userController.logout);
+router.post('/logout', userController.logout);
 
 // Get logged-in user's information (used after login to verify session)
-router.get('/', isLoggedIn, userController.getUserInfo);
+router.get('/', userController.getUserInfo);
 
 // Change the current user's password
-router.patch('/', isLoggedIn, userController.changePassword);
+router.patch('/', userController.changePassword);
 
 
 // =====================
@@ -47,13 +34,13 @@ router.patch('/', isLoggedIn, userController.changePassword);
 // =====================
 
 // Place a new order (buy/sell)
-router.post('/order', isLoggedIn, userController.order);
+router.post('/order', userController.order);
 
 // Get all orders made by the user
-router.get('/get-orders', isLoggedIn, userController.getOrders);
+router.get('/get-orders', userController.getOrders);
 
 // Get user's current holdings (stocks/assets owned)
-router.get('/get-holdings', isLoggedIn, userController.getHoldings);
+router.get('/get-holdings', userController.getHoldings);
 
 
 // =====================
@@ -61,13 +48,13 @@ router.get('/get-holdings', isLoggedIn, userController.getHoldings);
 // =====================
 
 // Add funds to user's trading account
-router.patch('/fund/add', isLoggedIn, userController.addFunds);
+router.patch('/fund/add', userController.addFunds);
 
 // Withdraw funds from user's trading account
-router.patch('/fund/withdraw', isLoggedIn, userController.withdrawFunds);
+router.patch('/fund/withdraw', userController.withdrawFunds);
 
 // Get current fund balance of the user
-router.get('/fund', isLoggedIn, userController.getFunds);
+router.get('/fund', userController.getFunds);
 
 
 module.exports = router;

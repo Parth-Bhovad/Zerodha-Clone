@@ -32,13 +32,18 @@ const signUp = async (req, res) => {
 }
 
 const login = async (req, res) => {
+    console.log("Login request received");
     const { username, password } = req.body;
-
-    const user = User.findOne({ username });
+    console.log("password:", password);
+    
+    const user = await User.findOne({ username });
 
     if (!user) {
         return res.status(400).json({ message: "Invalid credential" });
     }
+
+    console.log("User found:", user);
+    
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
@@ -54,6 +59,9 @@ const login = async (req, res) => {
         secure: process.env.NODE_ENV === "production",  // Secure only in production
         sameSite: process.env.NODE_ENV === "production" ? "none" : "Lax"
     });
+    console.log("User ID:", user._id);
+    console.log("Token:", token);
+    
 
     res.json({ token, userId: user._id });
 }
@@ -241,6 +249,7 @@ const logout = (req, res) => {
 
 module.exports = {
     signUp,
+    login,
     getUserInfo,
     changePassword,
     getHoldings,
