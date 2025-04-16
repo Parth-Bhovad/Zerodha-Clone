@@ -1,5 +1,7 @@
 const User = require("../model/UserModel");
 const OrdersModel = require("../model/OrdersModel");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 
 const signUp = async (req, res) => {
     const { email, username, password } = req.body;
@@ -7,19 +9,53 @@ const signUp = async (req, res) => {
 
     try {
         const newUser = await User({ email, username });  // Create a new user instance
-        const registeredUser = await User.register(newUser, password);
-        console.log(registeredUser); // Log the registered user for debugging
 
-        req.logIn(registeredUser, (err) => {
-            if (err) {
-                return res.status(500).json({ message: "Login failed" });
-            }
-            return res.status(201).json({ user: registeredUser });
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        newUser.password = hashedPassword;
+        await newUser.save();
+
+        const token = jwt.sign({ id: newUser._id },
+            process.env.JWT_SECRET_KEY
+        );
+
+        res.cookie("token", token, {
+            httpOnly: true,  // Prevents JavaScript access
+            secure: process.env.NODE_ENV === "production",  // Secure only in production
+            sameSite: process.env.NODE_ENV === "production" ? "none" : "Lax"
         });
-
+        res.json({ token, userId: newUser._id });
     } catch (error) {
         res.status(400).json({ message: error });
     }
+}
+
+const login = async (req, res) => {
+    const { username, password } = req.body;
+
+    const user = User.findOne({ username });
+
+    if (!user) {
+        return res.status(400).json({ message: "Invalid credential" });
+    }
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+        return res.status(400).json({ message: "Invalid credential" });
+    }
+
+    const token = jwt.sign({ id: user._id },
+        process.env.JWT_SECRET_KEY,
+    );
+
+    res.cookie("token", token, {
+        httpOnly: true,  // Prevents JavaScript access
+        secure: process.env.NODE_ENV === "production",  // Secure only in production
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "Lax"
+    });
+
+    res.json({ token, userId: user._id });
 }
 
 const getUserInfo = async (req, res) => {

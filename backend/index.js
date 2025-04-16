@@ -3,13 +3,6 @@ require('dotenv').config();
 const app = express();
 const mongoose = require('mongoose');
 const cors = require('cors');
-const passport = require('passport');
-const LocalStrategy = require('passport-local').Strategy;
-const session = require('express-session');
-const MongoStore = require('connect-mongo');
-
-//Models
-const User = require('./model/UserModel');
 
 //Routers
 const userRouter = require('./routes/user.router');
@@ -37,37 +30,6 @@ app.use(express.json());
 
 //MONGODB URL
 const uri = process.env.MONGO_URL;
-//Session storage congiguration
-const store = MongoStore.create({
-    mongoUrl: uri,
-    crypto: {
-        secret: process.env.SESSION_SECRET,
-    },
-    touchAfter: 24 * 3600
-});
-
-const sessionConfig = {
-    store: store,
-    secret: process.env.COOKIE_SECRET,
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-        maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
-        httpOnly: true,
-        secure: true, // Secure only in production
-        sameSite: "none", // SameSite attribute for CSRF protection
-    },
-}
-
-app.use(session(sessionConfig));
-app.use(passport.initialize());
-
-app.use(passport.session());
-passport.use(new LocalStrategy(User.authenticate()));
-
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
-
 //Routes
 
 app.use('/api/user', userRouter);
