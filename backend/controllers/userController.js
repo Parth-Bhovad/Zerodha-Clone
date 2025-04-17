@@ -35,7 +35,7 @@ const login = async (req, res) => {
     console.log("Login request received");
     const { username, password } = req.body;
     console.log("password:", password);
-    
+
     const user = await User.findOne({ username });
 
     if (!user) {
@@ -43,7 +43,7 @@ const login = async (req, res) => {
     }
 
     console.log("User found:", user);
-    
+
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
@@ -61,14 +61,17 @@ const login = async (req, res) => {
     });
     console.log("User ID:", user._id);
     console.log("Token:", token);
-    
+
 
     res.json({ token, userId: user._id });
 }
 
 const getUserInfo = async (req, res) => {
+    console.log("Get user info request received");
     try {
-        const existingUser = await User.findById(req.user._id);
+        const userId = req.params.userId;
+        console.log("Fetching user info for ID:", userId);
+        const existingUser = await User.findById(userId);
         if (!existingUser) {
             return res.status(404).json({ message: "User not found" });
         }
@@ -81,23 +84,25 @@ const getUserInfo = async (req, res) => {
 const changePassword = async (req, res) => {
     console.log("Change password request received");
     try {
-        console.log("Fetching user with ID:", req.user._id);
-        const existingUser = await User.findById(req.user._id);
+        const userId = req.params.userId;
+        const { password } = req.body;
+        console.log("New password:", password);
+        console.log("Changing password for user ID:", userId);
+        const existingUser = await User.findById(userId);
         if (!existingUser) {
             console.log("User not found");
             return res.status(404).json({ message: "User not found" });
         }
 
-        console.log("Setting new password for user:", req.user._id);
-        existingUser.setPassword(req.body.password, async (err) => {
-            if (err) {
-                console.error("Error setting password:", err);
-                return res.status(500).json({ message: "Error changing password" });
-            }
-            await existingUser.save(); // Save the updated user document
-            console.log("Password changed successfully for user:", req.user._id);
-            res.status(200).json({ message: "Password changed successfully!" });
-        });
+        console.log("Setting new password for user:", userId);
+
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        existingUser.password = hashedPassword;
+        await existingUser.save();
+        console.log("Password changed successfully for user:", userId);
+        res.status(200).json({ message: "Password changed successfully" });
     } catch (error) {
         console.error("Error in changePassword:", error.message);
         res.status(500).json({ message: error.message });
@@ -106,7 +111,8 @@ const changePassword = async (req, res) => {
 
 const getHoldings = async (req, res) => {
     try {
-        const exitingUser = await User.findById(req.user._id);
+        const userId = req.params.userId;
+        const exitingUser = await User.findById(userId);
         if (!exitingUser) {
             return res.status(404).json({ message: "User not found" });
         }
@@ -122,26 +128,33 @@ const getHoldings = async (req, res) => {
 };
 
 const order = async (req, res) => {
-    const newOrder = new OrdersModel({ ...req.body });
-    console.log(newOrder);
-    newOrder.save()
-        .then(() => console.log("Order created successfully!"))
-        .catch((error) => res.status(400).json({ message: error.message }));
-    const existingUser = await User.findById(req.user._id);
-    if (!existingUser) {
-        return res.status(404).json({ message: "User not found" });
+    try {
+        const userId = req.params.userId;
+        const newOrder = new OrdersModel({ ...req.body });
+        console.log(newOrder);
+        newOrder.save()
+            .then(() => console.log("Order created successfully!"))
+            .catch((error) => res.status(400).json({ message: error.message }));
+        const existingUser = await User.findById(userId);
+        if (!existingUser) {
+            return res.status(404).json({ message: "User not found" });
+        }
+    
+        existingUser.orders.push(newOrder._id);
+        await existingUser.save();
+        res.status(200).json({ message: "Order saved successfully!" });
+    } catch (error) {
+        console.log("Error during order:", error);
+        res.json(error)
     }
-
-    existingUser.orders.push(newOrder._id);
-    await existingUser.save();
-    res.status(200).json({ message: "Order saved successfully!" });
 };
 
 const getFunds = async (req, res) => {
     console.log("Getting funds...");
 
     try {
-        const existingUser = await User.findById(req.user._id);
+        const userId = req.params.userId
+        const existingUser = await User.findById(userId);
         if (!existingUser) {
             return res.status(404).json({ message: "User not found" });
         }
@@ -161,7 +174,9 @@ const addFunds = async (req, res) => {
         return res.status(400).json({ message: "Invalid amount" });
     }
     try {
-        const existingUser = await User.findById(req.user._id);
+        const userId = req.params.userId;
+
+        const existingUser = await User.findById(userId);
         if (!existingUser) {
             return res.status(404).json({ message: "User not found" });
         }
@@ -178,6 +193,7 @@ const addFunds = async (req, res) => {
 
 const withdrawFunds = async (req, res) => {
     try {
+        const userId = req.params.userId;
         const { amount } = req.body;
         console.log("Withdrawing funds:", amount);
 
@@ -185,7 +201,7 @@ const withdrawFunds = async (req, res) => {
             return res.status(400).json({ message: "Invalid withdrawal amount" });
         }
 
-        const existingUser = await User.findById(req.user._id);
+        const existingUser = await User.findById(userId);
         if (!existingUser) {
             return res.status(404).json({ message: "User not found" });
         }
@@ -209,16 +225,15 @@ const getOrders = async (req, res) => {
     console.log("Getting orders...");
 
     try {
-        console.log("Fetching orders for user ID:", req.user._id);
+        const userId = req.params.userId;
+        console.log("Fetching orders for user ID:", userId);
 
         console.log("existingUser");
-        const existingUser = await User.findById(req.user._id).populate('orders');
+        const existingUser = await User.findById(userId).populate('orders');
         console.log(existingUser);
         if (!existingUser) {
             return res.status(404).json({ message: "User not found" });
         }
-
-
 
         const orders = existingUser.orders;
         if (!orders) {
@@ -231,20 +246,15 @@ const getOrders = async (req, res) => {
 }
 
 const logout = (req, res) => {
-    req.logout((err) => {
-        if (err) {
-            console.error("Error during logout:", err);
-            return res.status(500).json({ message: "Logout failed" });
-        }
-        req.session.destroy((err) => {
-            if (err) {
-                console.error("Error destroying session:", err);
-                return res.status(500).json({ message: "Logout failed" });
-            }
-            res.clearCookie("connect.sid", { path: "/" }); // Clear the session cookie
-            res.status(200).json({ message: "Logged out successfully" });
-        });
-    })
+    console.log("logout");
+
+    res.clearCookie("token", {
+        httpOnly: true,  // Prevents JavaScript access
+        secure: process.env.NODE_ENV === "production",  // Secure only in production
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "Lax"
+    });
+    res.status(200).json({ success: true, message: "Logged out successfully" });
+    console.log("Logged out successfully");
 }
 
 module.exports = {

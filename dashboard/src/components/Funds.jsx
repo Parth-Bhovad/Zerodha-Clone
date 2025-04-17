@@ -11,7 +11,12 @@ const Funds = () => {
   const [funds, setFunds] = useState(0);
   useEffect(() => {
     const fetchFunds = async () => {
-      let response = await api.get("/api/user/fund");
+      const userId = localStorage.getItem('userId');
+    if (!userId) {
+      alert("User not found in localStorage");
+      return;
+    }
+      let response = await api.get(`/api/user/fund/${userId}`);
       setFunds(response.data.margin);
     }
 

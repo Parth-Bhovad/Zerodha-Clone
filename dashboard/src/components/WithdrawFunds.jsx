@@ -8,7 +8,12 @@ const WithdrawFunds = () => {
   const [message, setMessage] = useState("");
 
   const handleWithdrawFunds = async () => {
-    const response = await api.patch("/api/user/fund/withdraw", { amount });
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+      alert("User not found in localStorage");
+      return;
+    }
+    const response = await api.patch(`/api/user/fund/withdraw/${userId}`, { amount });
     console.log(response.data);
     setMessage(`₹${amount} withdrawn successfully.`);
   };

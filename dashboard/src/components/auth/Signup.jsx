@@ -6,47 +6,47 @@ import { useNavigate } from 'react-router-dom';
 import api from '../../api/axios';
 
 const Signup = () => {
-  const [formData, setFormData] = useState({
-    username: '',
-    email: '',
-    password: '',
-  });
-
-  const handleChange = (e) => {
-    setFormData({ 
-      ...formData, 
-      [e.target.name]: e.target.value 
+    let navigate = useNavigate();
+    const [formData, setFormData] = useState({
+        username: '',
+        email: '',
+        password: '',
     });
-  };
 
-  const handleSubmit = async ( ) => {
-    try {
-        console.log('Form Data:', formData);
-        const response = await api.post('/api/user', formData);
-        console.log('Response:', response.data);
-        localStorage.setItem('userId', response.data.userId);
-        alert(`Welcome, ${formData.username}!`);
-        // Redirect to login page after successful signup
-        let navigate = useNavigate();
-        navigate('/');
-    } catch (error) {
-        console.error('Signup error:', error);
-        alert('Error signing up. Please try again.');
-    }
-  };
+    const handleChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        });
+    };
 
-return (
-    <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
-        <div className="p-4 border rounded shadow-sm bg-white" style={{ width: '350px' }}>
-            <div className="text-center mb-4">
-                <img
-                    src="https://zerodha.com/static/images/logo.svg"
-                    alt="Zerodha Logo"
-                    style={{ width: '150px' }}
-                />
-                <h5 className="mt-3 mb-1">Create your account</h5>
-                <small className="text-muted">Start investing today</small>
-            </div>
+    const handleSubmit = async () => {
+        try {
+            console.log('Form Data:', formData);
+            const response = await api.post('/api/user', formData);
+            console.log('Response:', response.data);
+            localStorage.setItem('userId', response.data.userId);
+            alert(`Welcome, ${formData.username}!`);
+            // Redirect to login page after successful signup
+            navigate('/');
+        } catch (error) {
+            console.error('Signup error:', error);
+            alert('Error signing up. Please try again.');
+        }
+    };
+
+    return (
+        <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
+            <div className="p-4 border rounded shadow-sm bg-white" style={{ width: '350px' }}>
+                <div className="text-center mb-4">
+                    <img
+                        src="https://zerodha.com/static/images/logo.svg"
+                        alt="Zerodha Logo"
+                        style={{ width: '150px' }}
+                    />
+                    <h5 className="mt-3 mb-1">Create your account</h5>
+                    <small className="text-muted">Start investing today</small>
+                </div>
 
                 <div className="mb-3">
                     <input
@@ -89,14 +89,14 @@ return (
                 </button>
 
 
-            <div className="text-center mt-3">
-                <small className="text-muted">
-                    Already have an account? <Link to="/login">Log in</Link>
-                </small>
+                <div className="text-center mt-3">
+                    <small className="text-muted">
+                        Already have an account? <Link to="/login">Log in</Link>
+                    </small>
+                </div>
             </div>
         </div>
-    </div>
-);
+    );
 };
 
 export default Signup;

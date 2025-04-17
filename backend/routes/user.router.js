@@ -23,10 +23,10 @@ router.post('/login', userController.login);
 router.post('/logout', userController.logout);
 
 // Get logged-in user's information (used after login to verify session)
-router.get('/', userController.getUserInfo);
+router.get('/:userId', userController.getUserInfo);
 
 // Change the current user's password
-router.patch('/', userController.changePassword);
+router.patch('/:userId', userController.changePassword);
 
 
 // =====================
@@ -34,13 +34,13 @@ router.patch('/', userController.changePassword);
 // =====================
 
 // Place a new order (buy/sell)
-router.post('/order', userController.order);
+router.post('/order/:userId', userController.order);
 
 // Get all orders made by the user
-router.get('/get-orders', userController.getOrders);
+router.get('/get-orders/:userId', userController.getOrders);
 
 // Get user's current holdings (stocks/assets owned)
-router.get('/get-holdings', userController.getHoldings);
+router.get('/get-holdings/:userId', userController.getHoldings);
 
 
 // =====================
@@ -48,13 +48,13 @@ router.get('/get-holdings', userController.getHoldings);
 // =====================
 
 // Add funds to user's trading account
-router.patch('/fund/add', userController.addFunds);
+router.patch('/fund/add/:userId', userController.addFunds);
 
 // Withdraw funds from user's trading account
-router.patch('/fund/withdraw', userController.withdrawFunds);
+router.patch('/fund/withdraw/:userId', userController.withdrawFunds);
 
 // Get current fund balance of the user
-router.get('/fund', userController.getFunds);
+router.get('/fund/:userId', userController.getFunds);
 
 
 module.exports = router;

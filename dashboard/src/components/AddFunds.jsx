@@ -11,8 +11,12 @@ const AddFunds = () => {
     const handleAddFunds = async () => {
         try {
             console.log("Adding funds:", typeof amount);
-
-            const response = await api.patch("/api/user/fund/add", { amount });
+            const userId = localStorage.getItem('userId');
+            if (!userId) {
+              alert("User not found in localStorage");
+              return;
+            }
+            const response = await api.patch(`/api/user/fund/add/${userId}`, { amount });
             console.log(response.data);
             setMessage(`₹${amount} added successfully.`);
         } catch (error) {

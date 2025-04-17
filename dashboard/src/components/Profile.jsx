@@ -14,7 +14,8 @@ const UserProfile = () => {
   useEffect(() => {
     const fetchUserInfo = async () => {
       try {
-        const response = await api.get('/api/user');
+        const response = await api.get(`/api/user/${localStorage.getItem('userId')}`);
+        console.log('Fetching user info...');
         console.log(response.data);
         setUserInfo(response.data);
       } catch (error) {
@@ -26,12 +27,18 @@ const UserProfile = () => {
   }, [])
 
   const handlePasswordUpdate = async () => {
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+      alert("User not found in localStorage");
+      return;
+    }
+
     if (!newPassword.trim()) {
       alert('Please enter a valid password');
       return;
     }
 
-    const response = await api.patch('/api/user', { password: newPassword });
+    const response = await api.patch(`/api/user/${userId}`, { password: newPassword });
     console.log('Updating password...');
     console.log('Response:', response);
     
@@ -47,7 +54,7 @@ const UserProfile = () => {
       console.log('Logging out...');
       console.log('Response:', response);
 
-      localStorage.removeItem('username'); // Clear username from local storage after logout
+      localStorage.removeItem('userId'); // Clear username from local storage after logout
       if (response.status === 200) {
         alert(response.data.message);
         Navigate("/login") // Redirect to login page

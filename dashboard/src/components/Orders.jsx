@@ -10,7 +10,12 @@ const Orders = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await api.get("/api/user/get-orders");
+        const userId = localStorage.getItem('userId');
+    if (!userId) {
+      alert("User not found in localStorage");
+      return;
+    }
+        const response = await api.get(`/api/user/get-orders/${userId}`);
           setOrders(response.data);
       } catch (error) {
         console.error("Error fetching orders:", error);

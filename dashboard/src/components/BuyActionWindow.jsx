@@ -13,7 +13,12 @@ const BuyActionWindow = ({ uid }) => {
   const [stockPrice, setStockPrice] = useState(0.0);
 
   const handleBuyClick = async () => {
-    let res = await api.post("/api/user/order", {
+    const userId = localStorage.getItem('userId');
+    if (!userId) {
+      alert("User not found in localStorage");
+      return;
+    }
+    let res = await api.post(`/api/user/order/${userId}`, {
       name: uid,
       qty: stockQuantity,
       price: stockPrice,

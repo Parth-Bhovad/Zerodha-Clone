@@ -26,7 +26,10 @@ const Login = () => {
         const response = await api.post('/api/user/login', formData);
         console.log('Response:', response);
         localStorage.setItem('userId', response.data.userId);
-        navigate('/');
+        console.log('Navigating to home...');
+navigate('/');
+console.log('Navigated'); // If you don’t see this, maybe it’s crashing or async context is wrong.
+
     } catch (error) {
         console.error('Login error:', error);
         alert('Invalid username or password. Please try again.');
