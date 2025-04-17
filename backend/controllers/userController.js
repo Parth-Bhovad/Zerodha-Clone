@@ -129,17 +129,27 @@ const getHoldings = async (req, res) => {
 
 const order = async (req, res) => {
     try {
+        console.log("Order request received");
         const userId = req.params.userId;
         const newOrder = new OrdersModel({ ...req.body });
         console.log(newOrder);
-        newOrder.save()
-            .then(() => console.log("Order created successfully!"))
-            .catch((error) => res.status(400).json({ message: error.message }));
+        await newOrder.save()
         const existingUser = await User.findById(userId);
         if (!existingUser) {
             return res.status(404).json({ message: "User not found" });
         }
-    
+
+        if (newOrder.mode === "BUY") {
+            if (existingUser.balance < newOrder.price) {
+                return res.status(400).json({ message: "Insufficient balance" });
+            }
+            existingUser.balance -= newOrder.price; // Deduct the order price from the user's balance
+            console.log("if",existingUser.balance);
+        } else {
+            existingUser.balance += newOrder.price; // Add the order price to the user's balance
+            console.log("else", existingUser.balance);
+        }
+        
         existingUser.orders.push(newOrder._id);
         await existingUser.save();
         res.status(200).json({ message: "Order saved successfully!" });

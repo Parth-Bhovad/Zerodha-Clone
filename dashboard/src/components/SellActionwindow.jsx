@@ -8,38 +8,30 @@ import GeneralContext from "./GeneralContext";
 
 import "./BuyActionWindow.css";
 
-const BuyActionWindow = ({ uid, price }) => {
+const SellActionWindow = ({ uid, price }) => {
   const [stockQuantity, setStockQuantity] = useState(1);
   // const [stockPrice, setStockPrice] = useState(0.0);
 
   const generalContext = useContext(GeneralContext);
-  console.log(price);
-  
-  const handleBuyClick = async () => {
+
+  const handleSellClick = async () => {
     const userId = localStorage.getItem('userId');
     if (!userId) {
       alert("User not found in localStorage");
       return;
     }
-    let response = await api.get(`/api/user/fund/${userId}`);
-    let balance = response.data.margin;
-    if (price > balance) {
-      alert("Insufficient funds");
-      return;
-    }
-
     let res = await api.post(`/api/user/order/${userId}`, {
       name: uid,
       qty: stockQuantity,
       price,
-      mode: "BUY",
+      mode: "SELL",
     });
     console.log(res.data);
-    generalContext.closeBuyWindow();
+    generalContext.closeSellWindow();
   };
 
   const handleCancelClick = () => {
-    generalContext.closeBuyWindow();
+    generalContext.closeSellWindow();
   };
 
   return (
@@ -73,8 +65,8 @@ const BuyActionWindow = ({ uid, price }) => {
       <div className="buttons">
         <span>Margin required ₹140.65</span>
         <div>
-          <Link className="btn btn-blue" onClick={handleBuyClick}>
-            Buy
+          <Link className="btn btn-blue" onClick={handleSellClick}>
+            Sell
           </Link>
           <Link to="" className="btn btn-grey" onClick={handleCancelClick}>
             Cancel
@@ -85,4 +77,4 @@ const BuyActionWindow = ({ uid, price }) => {
   );
 };
 
-export default BuyActionWindow;
+export default SellActionWindow;

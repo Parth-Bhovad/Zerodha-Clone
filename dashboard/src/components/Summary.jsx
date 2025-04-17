@@ -1,11 +1,26 @@
-import { useAuth } from "../AuthContext";
-
+//importing axios api
+import api from "../api/axios";
+import { useEffect, useState } from "react";
 const Summary = () => {
-  const {user} = useAuth();
+  const [userInfo, setUserInfo] = useState({});
+  useEffect(() => {
+    const fetchUserInfo = async () => {
+      try {
+        const response = await api.get(`/api/user/${localStorage.getItem('userId')}`);
+        console.log('Fetching user info...');
+        console.log(response.data);
+        setUserInfo(response.data);
+      } catch (error) {
+        console.error('Error fetching user info:', error);
+      }
+    };
+
+    fetchUserInfo();
+  }, [])
   return (
     <>
       <div className="username">
-        <h6>Hi, {user}!</h6>
+        <h6>Hi, {userInfo.username}!</h6>
         <hr className="divider" />
       </div>
 
