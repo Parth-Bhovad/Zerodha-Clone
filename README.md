@@ -61,7 +61,6 @@ You can try out the live version of the project here: [Zerodha Clone](https://ze
 The project is actively being developed. Here's what's currently in progress:
 
 - [ ] UI Improvements and responsiveness
-- [ ] Sell orders
 - [ ] Holdings functionality
 
 Stay tuned! More updates coming soon.
