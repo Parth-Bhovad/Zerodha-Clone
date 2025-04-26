@@ -1,16 +1,16 @@
 function Team() {
   return (
-    <div className="container">
+    <div className="container-xl mb-5 border-bottom">
       <div className="row">
-        <div className="row p-5 border-top">
+        <div className="row border-top">
         <h1 className="text-center">People</h1>
         </div>
-        <div className="col-6 text-center">
+        <div className="col-md-6 col-12 text-center">
           <img src="\media\images\nithinKamath.jpg" alt="ceo" style={{borderRadius:"100%", width:"45%"}}/>
           <h4 className="mt-5">Nithin Kamath</h4>
           <h6>Founder, CEO</h6>
         </div>
-        <div className="col-6">
+        <div className="col-md-6 col-12 text-center">
           <p className="text-muted">
             Nithin bootstrapped and founded Zerodha in 2010 to overcome the
             hurdles he faced during his decade long stint as a trader. Today,
