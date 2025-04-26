@@ -1,8 +1,8 @@
 function Stats() {
     return ( 
-       <div className="container p-3">
-        <div className="row p-5">
-            <div className="col-6 p-5">
+       <div className="container-xl">
+        <div className="row align-items-center justify-content-center">
+            <div className="col-md-6 col-12">
                 <h1 className="fs-2 mb-5">Trust with confidence</h1>
 
                 <h2 className="fs-4">Customer-first always</h2>
@@ -17,7 +17,7 @@ function Stats() {
                 <h2 className="fs-4">Do better with money</h2>
                 <p className="text-muted">With initiatives like Nudge and Kill Switch, we don't just facilitate transactions, but actively help you do better with your money.</p>
             </div>
-            <div className="col-6 p-5">
+            <div className="col-md-6 col-12">
                 <img src="media/images/ecosystem.png" alt="" style={{width:"90%"}}/>
                 <div className="text-center  p-5">
                     <a href="" className="m-3" style={{textDecoration:"none"}}>Explore our products <i className="fa-solid fa-arrow-right"></i></a>
