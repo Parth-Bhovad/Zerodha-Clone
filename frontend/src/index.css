@@ -29,7 +29,13 @@ code {
 #supportWrapper{
   display: flex;
   justify-content: space-between;
-  margin: 0 150px;
+}
+
+@media (min-width:768px) {
+  #supportWrapper{
+    margin: 0 150px;
+    padding: 2rem;
+  } 
 }
 
 #supportHero input{

@@ -1,14 +1,16 @@
 import { Link } from "react-router-dom";
+//css
+import "./navbar.css"
 function Navbar() {
   return (
     <nav
       className="navbar navbar-expand-lg border-bottom"
       style={{ backgroundColor: "#fff" }}
     >
-      <div className="container d-flex justify-content-between align-items-center">
+      <div className="container-xl d-flex justify-content-between align-items-center">
         {/* Logo */}
-       <Link to={"/"}>
-       <img src="media/images/logo.svg" alt="Logo" style={{ width: "30%" }} />
+       <Link to={"/"} className="navbar-brand brand-logo-link">
+       <img src="media/images/logo.svg" alt="Logo" className="brand-logo"/>
        </Link>
 
         {/* Toggler for mobile view */}

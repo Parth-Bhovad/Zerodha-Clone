@@ -1,0 +1,41 @@
+.brand-logo {
+    width: 40%;
+  }
+  
+  .brand-logo-link {
+    width: 100%;
+  }
+  
+  /* Tablet */
+  @media (max-width: 992px) {
+    .brand-logo {
+      width: 50%;
+    }
+  
+    .brand-logo-link {
+      width: 70%;
+    }
+  }
+  
+  /* Mobile */
+  @media (max-width: 600px) {
+    .brand-logo {
+      width: 60%;
+    }
+  
+    .brand-logo-link {
+      width: 80%;
+    }
+  }
+  
+  /* Small mobile */
+  @media (max-width: 400px) {
+    .brand-logo {
+      width: 70%;
+    }
+  
+    .brand-logo-link {
+      width: 70%;
+    }
+  }
+  
