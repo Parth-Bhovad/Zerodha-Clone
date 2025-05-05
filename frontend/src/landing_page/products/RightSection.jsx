@@ -1,8 +1,8 @@
 function RightSection({imageUrl, productName, productDescription, link, linkText}) {
     return ( 
-        <div className="container border-top mt-5">
-            <div className="row">
-                <div className="col-6 p-5 mt-5">
+        <div className="container-xl border-top mt-5">
+            <div className="row align-items-center justify-content-center">
+                <div className="col-md-6 col-12 mt-5">
                     <h1>{productName}</h1>
                     <p>{productDescription}</p>
                     <div className="mb-4">
@@ -10,8 +10,8 @@ function RightSection({imageUrl, productName, productDescription, link, linkText
                     </div>
                 </div>
 
-                <div className="col-6 p-5">
-                    <img src={imageUrl} />
+                <div className="col-md-6 col-12 d-flex align-items-center justify-content-center">
+                    <img src={imageUrl} width={"90%"}/>
                 </div>
             </div>
         </div>

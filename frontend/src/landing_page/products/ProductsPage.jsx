@@ -48,7 +48,7 @@ function ProductsPage() {
                 googlePlay="{googlePlay}"
                 appStore="{appStore} "
             />
-            <h4 className='text-center'>Want to know more about our technology stack? Check out the Zerodha.tech blog.</h4>
+            <h4 className='text-center mt-5 pt-5 pb-5 mb-5'>Want to know more about our technology stack? Check out the Zerodha.tech blog.</h4>
             <Universe />
         </div>
     );
